@@ -1,0 +1,24 @@
+type Order {
+  carrier: String
+  createdAt: Date
+  shippingCost: Int
+  trackingId: String
+  Adress: String
+  Lat: Float
+  Lng: Float
+  trackingItems: TrackingItems
+    @materializer(
+      query: "getTrackingItemById" # the name of the query in the schema qui permet d'afficher un item en particulier
+      arguments: [{ name: "id", field: "trackingId" }] # on passe l'id du trackingID comme argument de la fonction getTrackingItemsById(id)
+    )
+}
+
+type OrderList {
+  name: ID
+  value: Order
+}
+
+type Query {
+  getOrderById(id: ID!): Order @rest(endpoint: "https://delivery-app-95459-default-rtdb.europe-west1.firebasedatabase.app/orders/$id.json")
+  getOrders: [OrderList] @rest(endpoint: "https://delivery-app-95459-default-rtdb.europe-west1.firebasedatabase.app/orders.json", transforms: [{ pathpattern: [], editor: "objectToArray" }])
+}
